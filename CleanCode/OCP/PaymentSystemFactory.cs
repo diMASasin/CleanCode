@@ -1,17 +1,17 @@
-using System.ComponentModel;
+using CleanCode.OCP.PaymentSystems;
 
-namespace MethodName.OCP;
+namespace CleanCode.OCP;
 
-public class PaymentSystemFactory
+public class PaymentSystemFactory : IPaymentSystemFactory
 {
-    public static PaymentSystem Create(string id)
+    private readonly Dictionary<string, Func<PaymentSystem>> _paymentSystems = new()
     {
-        return id switch
-        {
-            "QIWI" => new Qiwi(id),
-            "WebMoney" => new WebMoney(id),
-            "Card" => new Card(id),
-            _ => throw new InvalidEnumArgumentException(nameof(id))
-        };
-    }
+        { "QIWI", () => new PaymentSystem("Перевод на страницу QIWI...", "Проверка платежа через QIWI...") },
+        { "WebMoney", () => new PaymentSystem("Вызов API WebMoney...", "Проверка платежа через WebMoney...") },
+        { "Card", () => new PaymentSystem("Вызов API банка эмитера карты Card...", "Проверка платежа через Card...") }
+    };
+
+    public IEnumerable<string> PaymentSystemNames => _paymentSystems.Keys;
+
+    public PaymentSystem Create(string id) => _paymentSystems[id]();
 }

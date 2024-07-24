@@ -1,13 +1,13 @@
-namespace MethodName;
+namespace CleanCode;
 
 public class CleanCode_ExampleTask15
 {
-    public class PlayerData { }
+    public class PlayerStatistics { }
     public class Gun { }
     public class TargetFollower{ }
-    public class Units
+    public class Team
     {
-        public IReadOnlyCollection<Unit> Value { get; private set; }
+        public IReadOnlyCollection<Unit> Units { get; private set; }
     }
 }
 

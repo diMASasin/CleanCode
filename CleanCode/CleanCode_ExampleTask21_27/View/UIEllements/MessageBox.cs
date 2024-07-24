@@ -1,4 +1,4 @@
-namespace MethodName.CleanCode_ExampleTask21_27.External;
+namespace CleanCode.CleanCode_ExampleTask21_27.External;
 
 internal class MessageBox
 {

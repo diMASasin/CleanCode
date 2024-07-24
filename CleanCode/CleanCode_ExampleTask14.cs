@@ -1,4 +1,4 @@
-namespace MethodName;
+namespace CleanCode.CleanCode_ExampleTask14;
 
 public class Weapon
 {

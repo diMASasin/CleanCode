@@ -1,4 +1,4 @@
-namespace MethodName;
+namespace CleanCode;
 
 public class CleanCode_ExampleTask17
 {
@@ -10,18 +10,13 @@ public class CleanCode_ExampleTask17
         //Создание объекта на карте
     }
 
-    public static void RandomizeChance()
+    public static void SetRandomChance()
     {
         _chance = Random.Range(0, 100);
     }
 
-    public static int GetSalaryAmount(int hoursWorked)
+    public static int CalculateSalary(int hoursWorked)
     {
         return _hourlyRate * hoursWorked;
     }
-}
-
-public static class Random
-{
-    public static int Range(int value1, int value2) => 52;
 }

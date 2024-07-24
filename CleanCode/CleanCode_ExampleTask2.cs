@@ -1,9 +1,14 @@
-namespace MethodName;
+namespace CleanCode;
 
 public class CleanCode_ExampleTask1
 {
-    public static int GetValidNumber(int a, int b, int c)
+    public static int Clamp(int value, int min, int max)
     {
-        return a < b ? b : Math.Min(a, c);
+        if (value < min)
+            return min;
+        else if (value > max)
+            return max;
+        else
+            return value;
     }
 }

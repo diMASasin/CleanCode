@@ -1,4 +1,4 @@
-namespace MethodName;
+namespace CleanCode;
 
 public partial class Program
 {
@@ -7,8 +7,14 @@ public partial class Program
         private int _bullets;
         private readonly int _bulletsPerShot = 1;
 
-        public bool CanShoot() => _bullets >= _bulletsPerShot;
+        public bool CanShoot => _bullets >= _bulletsPerShot;
 
-        public void Shoot() => _bullets -= _bulletsPerShot;
+        public void Shoot()
+        {
+            if (_bullets <= 0)
+                throw new ArgumentException(nameof(_bullets));
+            
+            _bullets -= _bulletsPerShot;
+        }
     }
 }

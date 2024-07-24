@@ -1,7 +1,7 @@
 using System.Security.Cryptography;
 using static System.Text.Encoding;
 
-namespace MethodName.CleanCode_ExampleTask21_27;
+namespace CleanCode.CleanCode_ExampleTask21_27;
 
 public class StringHashComputer
 {

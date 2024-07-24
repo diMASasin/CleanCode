@@ -1,4 +1,4 @@
-namespace MethodName;
+namespace CleanCode;
 
 public class CleanCode_ExampleTask30
 {
