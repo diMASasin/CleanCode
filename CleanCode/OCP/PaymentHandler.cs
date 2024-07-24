@@ -1,5 +1,3 @@
-using CleanCode.OCP.PaymentSystems;
-
 namespace CleanCode.OCP;
 
 public class PaymentHandler
