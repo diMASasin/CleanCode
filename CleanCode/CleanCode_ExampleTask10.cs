@@ -12,7 +12,7 @@ public partial class Program
         public void Shoot()
         {
             if (_bullets <= 0)
-                throw new ArgumentException(nameof(_bullets));
+                throw new InvalidOperationException(nameof(_bullets));
             
             _bullets -= _bulletsPerShot;
         }
