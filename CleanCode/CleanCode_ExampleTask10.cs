@@ -11,7 +11,7 @@ public partial class Program
 
         public void Shoot()
         {
-            if (_bullets <= _bulletsPerShot)
+            if (CanShoot == false)
                 throw new InvalidOperationException(nameof(_bullets));
             
             _bullets -= _bulletsPerShot;
