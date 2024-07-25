@@ -4,14 +4,14 @@ namespace CleanCode.OCP;
 
 public class PaymentSystemFactory : IPaymentSystemFactory
 {
-    private readonly Dictionary<string, Func<PaymentSystem>> _paymentSystems = new()
+    private readonly Dictionary<string, Func<IPaymentSystem>> _paymentSystems = new()
     {
-        { "QIWI", () => new PaymentSystem("Перевод на страницу QIWI...", "Проверка платежа через QIWI...") },
-        { "WebMoney", () => new PaymentSystem("Вызов API WebMoney...", "Проверка платежа через WebMoney...") },
-        { "Card", () => new PaymentSystem("Вызов API банка эмитера карты Card...", "Проверка платежа через Card...") }
+        { "QIWI", () => new Qiwi() },
+        { "WebMoney", () => new WebMoney() },
+        { "Card", () => new Card() }
     };
 
     public IEnumerable<string> PaymentSystemNames => _paymentSystems.Keys;
 
-    public PaymentSystem Create(string id) => _paymentSystems[id]();
+    public Func<IPaymentSystem> GetFactoryMethod(string id) => _paymentSystems[id];
 }

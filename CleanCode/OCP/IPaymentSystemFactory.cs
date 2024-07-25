@@ -5,5 +5,5 @@ namespace CleanCode.OCP;
 public interface IPaymentSystemFactory
 {
     public IEnumerable<string> PaymentSystemNames { get; }
-    public PaymentSystem Create(string id);
+    public Func<IPaymentSystem> GetFactoryMethod(string id);
 }

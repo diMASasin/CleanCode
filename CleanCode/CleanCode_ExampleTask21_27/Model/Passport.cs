@@ -6,27 +6,14 @@ public class Passport
     private const string WrongFormat = "Неверный формат серии или номера паспорта";
     private const int NumberLength = 10;
 
-    public string Number { get; private set; }
+    public string SerialNumber { get; private set; }
     
-    public event Action<string> WhiteSpaceEntered;
-    public event Action<string> WrongLength;
-    
-    public bool TrySetNumber(string number)
+    public Passport(string number)
     {
-        if (string.IsNullOrWhiteSpace(Number) == true)
-        {
-            WhiteSpaceEntered?.Invoke(WhiteSpaceEnteredMessage);
-            return false;
-        }
+        if (string.IsNullOrWhiteSpace(number) == true) throw new ArgumentNullException(WhiteSpaceEnteredMessage);
 
-        if (Number.Length < NumberLength)
-        {
-            WrongLength?.Invoke(WrongFormat);
-            return false;
-        }
-        
-        Number = number;
+        if (SerialNumber.Length < NumberLength) throw new FormatException(WrongFormat);
 
-        return true;
+        SerialNumber = number;
     }
 }

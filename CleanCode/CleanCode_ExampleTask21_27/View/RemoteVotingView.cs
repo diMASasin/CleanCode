@@ -4,16 +4,15 @@ namespace CleanCode.CleanCode_ExampleTask21_27.External;
 
 public class RemoteVotingView : IDisposable
 {
-    public readonly TextBox TextResult;
-    public readonly TextBox PassportTextbox;
-
     private readonly Button _checkButton;
-    
     private readonly RemoteVotingPresenter _remoteVotingPresenter;
+
+    private TextBox _textResult;
+    private TextBox _passportTextbox;
 
     public RemoteVotingView()
     {
-        _remoteVotingPresenter = new RemoteVotingPresenter(this);
+        _remoteVotingPresenter = new RemoteVotingPresenter();
         
         _checkButton.Clicked += OnClicked;
     }
@@ -21,9 +20,7 @@ public class RemoteVotingView : IDisposable
     public void Dispose()
     {
         _checkButton.Clicked -= OnClicked;
-        
-        _remoteVotingPresenter.Dispose();
     }
 
-    private void OnClicked() => _remoteVotingPresenter.OnCheckBoxButtonClicked();
+    private void OnClicked() => _remoteVotingPresenter.OnCheckBoxButtonClicked(_textResult, _passportTextbox);
 }

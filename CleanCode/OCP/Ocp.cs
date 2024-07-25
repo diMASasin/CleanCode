@@ -6,9 +6,9 @@ public class Program
     {
         var orderForm = new OrderForm();
         var paymentSystemFactory = new PaymentSystemFactory();
-        var paymentHandler = new PaymentHandler(paymentSystemFactory);
         
         string systemId = orderForm.ShowForm(paymentSystemFactory.PaymentSystemNames);
+        PaymentHandler paymentHandler = new(paymentSystemFactory.GetFactoryMethod(systemId));
 
         paymentHandler.ShowPaymentResult(systemId);
     }

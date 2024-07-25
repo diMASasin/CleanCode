@@ -2,56 +2,39 @@ using CleanCode.CleanCode_ExampleTask21_27.External;
 
 namespace CleanCode.CleanCode_ExampleTask21_27.Presenter;
 
-public class RemoteVotingPresenter : IDisposable
+public class RemoteVotingPresenter
 {
-    private readonly Passport _passport = new();
     private readonly FileHandler _fileHandler = new();
     private readonly AccessApprovementChecker _accessApprovementChecker = new();
-    private readonly RemoteVotingView _view;
     
-    private TextBox TextResult => _view.TextResult;
-
-    public RemoteVotingPresenter(RemoteVotingView view)
+    public void OnCheckBoxButtonClicked(TextBox passportTextbox, TextBox textResult)
     {
-        _view = view;
-        
-        _passport.WhiteSpaceEntered += ShowInMessageBox;
-        _passport.WrongLength += ShowInResultTextBox;
-        _fileHandler.FileDoesntExist += ShowInMessageBox;
-        _accessApprovementChecker.EmptyTableGot += ShowInResultTextBox;
-        _accessApprovementChecker.AccessNotApproved += ShowInResultTextBox;
+        string passportNumber = passportTextbox.Text.Replace(" ", string.Empty);
+
+        Citizen citizen = null;
+        try
+        {
+            var passport = new Passport(passportNumber);
+            citizen = new Citizen(passport);
+
+            string filePath = _fileHandler.FindFile();
+            
+            _accessApprovementChecker.TryApproveAccess(citizen, filePath);
+        }
+        catch (Exception exception)
+        {
+            if (exception is ArgumentNullException or FileNotFoundException)
+                MessageBox.Show(exception.Message);
+            else
+                textResult.Text = exception.Message;
+            
+            return;
+        }
+
+        string approvingText = citizen.IsAccessApproved == true ? "ПРЕДОСТАВЛЕН" : "ЗАПРЕЩЕН";
+        textResult.Text = GetAccessApprovingMessage(citizen.Passport.SerialNumber, approvingText);
     }
 
-    public void Dispose()
-    {
-        _passport.WhiteSpaceEntered -= ShowInMessageBox;
-        _passport.WrongLength -= ShowInResultTextBox;
-        _fileHandler.FileDoesntExist -= ShowInMessageBox;
-        _accessApprovementChecker.EmptyTableGot -= ShowInResultTextBox;
-        _accessApprovementChecker.AccessNotApproved -= ShowInResultTextBox;
-    }
-
-    public void OnCheckBoxButtonClicked()
-    {
-        string passportNumber = _view.PassportTextbox.Text.Replace(" ", string.Empty);
-        
-        if(_passport.TrySetNumber(passportNumber) == false)
-            return;
-
-        if(_fileHandler.TryFindFile(out string filePath) == false)
-            return;
-        
-        if(_accessApprovementChecker.IsAccessApproved(_passport.Number, filePath) == false)
-            return;
-        
-        ShowAccessApprovingMessage();
-    }
-
-    private void ShowAccessApprovingMessage() => 
-        TextResult.Text = 
-            $"По паспорту «{_passport.Number}» доступ к бюллетеню на дистанционном электронном голосовании ПРЕДОСТАВЛЕН";
-
-    private void ShowInMessageBox(string text) => MessageBox.Show(text);
-
-    private void ShowInResultTextBox(string text) => TextResult.Text = text;
+    private string GetAccessApprovingMessage(string serialNumber, string approvingText) =>
+        $"По паспорту «{serialNumber}» доступ к бюллетеню на дистанционном электронном голосовании {approvingText}";
 }

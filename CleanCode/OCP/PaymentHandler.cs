@@ -1,24 +1,24 @@
+using CleanCode.OCP.PaymentSystems;
+
 namespace CleanCode.OCP;
 
 public class PaymentHandler
 {
-    private readonly IPaymentSystemFactory _paymentSystemFactory;
+    private IPaymentSystem _paymentSystem;
 
-    public PaymentHandler(IPaymentSystemFactory paymentSystemFactory)
+    public PaymentHandler(Func<IPaymentSystem> createPaymentSystem)
     {
-        _paymentSystemFactory = paymentSystemFactory;
+        _paymentSystem = createPaymentSystem();
     }
 
     public void ShowPaymentResult(string systemIndex)
     {
-        var paymentSystem = _paymentSystemFactory.Create(systemIndex);
-        
-        if (paymentSystem == null) 
-            throw new ArgumentNullException(nameof(paymentSystem));
+        if (_paymentSystem == null) 
+            throw new ArgumentNullException(nameof(_paymentSystem));
         
         Console.WriteLine($"Вы оплатили с помощью {systemIndex}");
             
-        paymentSystem.ShowCheckPaymentMessege();
+        _paymentSystem.ShowCheckPaymentMessege();
         Console.WriteLine("Оплата прошла успешно!");
     }
 }

@@ -1,5 +1,6 @@
 using System.Data;
 using System.Data.SQLite;
+using System.Data.SqlTypes;
 using System.Security.Cryptography;
 
 namespace CleanCode.CleanCode_ExampleTask21_27.Presenter;
@@ -8,29 +9,25 @@ public class AccessApprovementChecker
 {
     private readonly StringHashComputer _stringHashComputer = new(SHA256.Create());
 
-    public event Action<string> EmptyTableGot;
-    public event Action<string> AccessNotApproved;
-
-    public bool IsAccessApproved(string passportNumber, string filePath)
+    public void TryApproveAccess(Citizen citizen, string dataBaseFilePath)
     {
-        if (passportNumber == null) throw new ArgumentNullException(nameof(passportNumber));
-        if (filePath == null) throw new ArgumentNullException(nameof(filePath));
+        if (citizen == null) throw new ArgumentNullException(nameof(citizen));
+        if (dataBaseFilePath == null) throw new ArgumentNullException(nameof(dataBaseFilePath));
         
-        var dataTable = GetDataTable(passportNumber, filePath);
+        string? serialNumber = citizen.Passport.SerialNumber;
+        
+        var dataTable = GetDataTable(serialNumber, dataBaseFilePath);
 
         bool isTableEmpty = dataTable.Rows.Count <= 0;
 
         if (isTableEmpty == true)
-            EmptyTableGot?.Invoke(
-                $"Паспорт «{passportNumber}» в списке участников дистанционного голосования НЕ НАЙДЕН");
+            throw new SqlNullValueException(
+                $"Паспорт «{serialNumber}» в списке участников дистанционного голосования НЕ НАЙДЕН");
 
         bool isAccessApproved = Convert.ToBoolean(dataTable.Rows[0].ItemArray[1]);
-
-        if (isAccessApproved == false)
-            AccessNotApproved?.Invoke($"По паспорту «{passportNumber}» доступ к бюллетеню" +
-                                      $" на дистанционном электронном голосовании НЕ ПРЕДОСТАВЛЯЛСЯ");
-
-        return isAccessApproved;
+        
+        if(isAccessApproved)
+            citizen.ApproveAccess();
     }
 
     private DataTable GetDataTable(string passportNumber, string connectionString)

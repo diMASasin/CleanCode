@@ -7,20 +7,15 @@ public class FileHandler
     private const string FileNotFound = $"Файл {DataBaseFileName} не найден. Положите файл в папку вместе с exe.";
     private const string DataBaseFileName = "db.sqlite";
     
-    public event Action<string> FileDoesntExist;
-    
-    public bool TryFindFile(out string FilePath)
+    public string FindFile()
     {
         string? assemblyLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         
-        FilePath = Path.Combine(assemblyLocation, DataBaseFileName);
+        string filePath = Path.Combine(assemblyLocation, DataBaseFileName);
 
-        if (File.Exists(FilePath) == false)
-        {
-            FileDoesntExist?.Invoke(FileNotFound);
-            return false;
-        }
-
-        return true;
+        if (File.Exists(filePath) == false)
+            throw new FileNotFoundException(FileNotFound);
+        
+        return filePath;
     }
 }
