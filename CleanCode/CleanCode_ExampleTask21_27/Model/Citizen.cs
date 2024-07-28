@@ -5,10 +5,10 @@ public class Citizen
     public Passport Passport { get; private set; }
     public bool IsAccessApproved { get; private set; }
 
-    public Citizen(Passport passport)
+    public Citizen(Passport passport, bool isAccessApproved)
     {
         Passport = passport ?? throw new ArgumentNullException(nameof(passport));
+        
+        IsAccessApproved = isAccessApproved;
     }
-
-    public void ApproveAccess() => IsAccessApproved = true;
 }

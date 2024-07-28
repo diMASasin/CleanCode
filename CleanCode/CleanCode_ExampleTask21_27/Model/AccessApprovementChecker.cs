@@ -9,12 +9,10 @@ public class AccessApprovementChecker
 {
     private readonly StringHashComputer _stringHashComputer = new(SHA256.Create());
 
-    public void TryApproveAccess(Citizen citizen, string dataBaseFilePath)
+    public bool IsAccessApproved(string serialNumber, string dataBaseFilePath)
     {
-        if (citizen == null) throw new ArgumentNullException(nameof(citizen));
+        if (string.IsNullOrWhiteSpace(serialNumber) == true) throw new ArgumentNullException(nameof(serialNumber));
         if (dataBaseFilePath == null) throw new ArgumentNullException(nameof(dataBaseFilePath));
-        
-        string? serialNumber = citizen.Passport.SerialNumber;
         
         var dataTable = GetDataTable(serialNumber, dataBaseFilePath);
 
@@ -25,9 +23,8 @@ public class AccessApprovementChecker
                 $"Паспорт «{serialNumber}» в списке участников дистанционного голосования НЕ НАЙДЕН");
 
         bool isAccessApproved = Convert.ToBoolean(dataTable.Rows[0].ItemArray[1]);
-        
-        if(isAccessApproved)
-            citizen.ApproveAccess();
+
+        return isAccessApproved;
     }
 
     private DataTable GetDataTable(string passportNumber, string connectionString)

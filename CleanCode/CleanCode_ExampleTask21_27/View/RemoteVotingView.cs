@@ -2,7 +2,7 @@ using CleanCode.CleanCode_ExampleTask21_27.Presenter;
 
 namespace CleanCode.CleanCode_ExampleTask21_27.External;
 
-public class RemoteVotingView : IDisposable
+public class RemoteVotingView : IDisposable, IRemoteVotingView
 {
     private readonly Button _checkButton;
     private readonly RemoteVotingPresenter _remoteVotingPresenter;
@@ -12,7 +12,7 @@ public class RemoteVotingView : IDisposable
 
     public RemoteVotingView()
     {
-        _remoteVotingPresenter = new RemoteVotingPresenter();
+        _remoteVotingPresenter = new RemoteVotingPresenter(this);
         
         _checkButton.Clicked += OnClicked;
     }
@@ -22,5 +22,9 @@ public class RemoteVotingView : IDisposable
         _checkButton.Clicked -= OnClicked;
     }
 
-    private void OnClicked() => _remoteVotingPresenter.OnCheckBoxButtonClicked(_textResult, _passportTextbox);
+    private void OnClicked() => _remoteVotingPresenter.OnCheckBoxButtonClicked(_textResult.Text);
+
+    public void ShowResult(string text) => _textResult.Text = text;
+
+    public void ShowMessage(string text) => MessageBox.Show(text);
 }

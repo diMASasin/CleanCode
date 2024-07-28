@@ -12,8 +12,8 @@ public class Passport
     {
         if (string.IsNullOrWhiteSpace(number) == true) throw new ArgumentNullException(WhiteSpaceEnteredMessage);
 
-        if (SerialNumber.Length < NumberLength) throw new FormatException(WrongFormat);
+        SerialNumber = number.Replace(" ", string.Empty);
 
-        SerialNumber = number;
+        if (number.Length < NumberLength) throw new FormatException(WrongFormat);
     }
 }

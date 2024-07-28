@@ -1,38 +1,37 @@
 using CleanCode.CleanCode_ExampleTask21_27.External;
+using CleanCode.CleanCode_ExampleTask21_27.Model;
 
 namespace CleanCode.CleanCode_ExampleTask21_27.Presenter;
 
 public class RemoteVotingPresenter
 {
-    private readonly FileHandler _fileHandler = new();
-    private readonly AccessApprovementChecker _accessApprovementChecker = new();
-    
-    public void OnCheckBoxButtonClicked(TextBox passportTextbox, TextBox textResult)
-    {
-        string passportNumber = passportTextbox.Text.Replace(" ", string.Empty);
+    private readonly CitizenFinder _citizenFinder = new();
+    private readonly IRemoteVotingView _view;
 
+    public RemoteVotingPresenter(IRemoteVotingView view)
+    {
+        _view = view;
+    }
+    
+    public void OnCheckBoxButtonClicked(string passportSerialNumber)
+    {
         Citizen citizen = null;
         try
         {
-            var passport = new Passport(passportNumber);
-            citizen = new Citizen(passport);
-
-            string filePath = _fileHandler.FindFile();
-            
-            _accessApprovementChecker.TryApproveAccess(citizen, filePath);
+            citizen = _citizenFinder.GetCitizen(passportSerialNumber);
         }
         catch (Exception exception)
         {
             if (exception is ArgumentNullException or FileNotFoundException)
-                MessageBox.Show(exception.Message);
+                _view.ShowMessage(exception.Message);
             else
-                textResult.Text = exception.Message;
+                _view.ShowResult(exception.Message);
             
             return;
         }
 
         string approvingText = citizen.IsAccessApproved == true ? "ПРЕДОСТАВЛЕН" : "ЗАПРЕЩЕН";
-        textResult.Text = GetAccessApprovingMessage(citizen.Passport.SerialNumber, approvingText);
+        _view.ShowResult(GetAccessApprovingMessage(citizen.Passport.SerialNumber, approvingText));
     }
 
     private string GetAccessApprovingMessage(string serialNumber, string approvingText) =>
